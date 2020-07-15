@@ -1,0 +1,17 @@
+{
+    "name": "luogu-info",
+    "version": "1.0.0",
+    "description": "用于获取洛谷用户信息并生成图片",
+    "main": "app.js",
+    "license": "MIT",
+    "private": "true",
+    "author": {
+        "name": "RainbowBird",
+        "email": "rbxin2003@outlook.com",
+        "url": "https://www.cnblogs.com/luoling8192"
+    },
+    "dependencies": {
+        "chalk": "^4.1.0",
+        "urlencode": "^1.1.0"
+    }
+}
