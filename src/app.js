@@ -60,7 +60,7 @@ function update() {
 
                     // 目标
                     if (args['to'] != null) {
-                        if (parseInt(args['to']) >= parseInt(query_num))
+                        if (parseInt(query_num) >= parseInt(args['to']))
                             query_color = 'green'
                         query_num = query_num + ' / ' + args['to']
                     }
