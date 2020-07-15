@@ -3,7 +3,6 @@ const http = require('http')
 const url = require('url')
 const querystring = require('querystring')
 var config = require('./config')
-const { time } = require('console')
 
 var querys = {
     'rating': '总估值',
@@ -22,11 +21,24 @@ var querys = {
     'problem7': 'NOI/NOI+/CTSC',
 }
 
-// 获取端口号
 var port = 98
 var timeout = 60000
-//if (process.argv.splice(2)[0] != null)
-//    port = process.argv.splice(2)[0]
+
+
+if (process.argv[2] == null) {
+    console.error(chalk.red('请传入正确的端口号后再重试'))
+    process.exit()
+} else if (process.argv[3] == null) {
+    console.error(chalk.red('请传入正确的UID后再重试'))
+    process.exit()
+} else if (process.argv[4] == null) {
+    console.error(chalk.red('请传入正确的Cookie后再重试'))
+    process.exit()
+}
+
+port = process.argv[2]
+config.uid = process.argv[3]
+config.client_id = process.argv[4]
 
 update()
 setInterval(update, timeout) // 实时更新数据

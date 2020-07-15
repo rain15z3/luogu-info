@@ -2,8 +2,8 @@ var config = {
     user: null,
     problems: null,
     problems_num: null,
-    uid: 312639,
-    client_id: 'b17cb3a074f4d0323335ff572140c341ae94831a'
+    uid: null,
+    client_id: null
 }
 
 module.exports = config

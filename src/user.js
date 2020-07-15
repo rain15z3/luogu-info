@@ -14,7 +14,7 @@ module.exports = (_uid, _client_id) => {
             }
         }
 
-        console.log('[User] 正在获取用户信息...')
+        console.log('[User] 正在获取用户信息...\nUID: ' + _uid)
     
         // 获取数据
         https.get(options, (_response) => {
@@ -58,7 +58,7 @@ module.exports = (_uid, _client_id) => {
                         return
                     }
                 } else {
-                    console.error(chalk.red('[User] 获取用户信息失败，状态码非200'))
+                    console.error(chalk.red('[User] 获取用户信息失败，状态码' + data['code']))
                     reject()
                     return
                 }
