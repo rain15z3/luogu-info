@@ -41,7 +41,8 @@ module.exports = (_uid, _client_id) => {
                             problem3: 0,
                             problem4: 0,
                             problem5: 0,
-                            problem6: 0
+                            problem6: 0,
+                            problem7: 0,
                         }
 
                         for (let problem of data.currentData['passedProblems']) {

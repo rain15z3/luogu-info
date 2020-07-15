@@ -31,58 +31,59 @@ var timeout = 60000
 update()
 setInterval(update, timeout) // 实时更新数据
 
+function request(_request, _response) {
+    console.log('[Server] URL: ' + _request.url)
+    let args = querystring.parse(url.parse(_request.url).query) // 获取参数
+
+    if (!_request.url.match(/gen/)) {
+        _response.writeHead(404)
+        _response.end('404 Not Found')
+    } else if (args['query'] == null) {
+        _response.writeHead(400)
+        _response.end('400 Bad Request')
+    } else if (args['query'] in querys) {
+        _response.writeHead(200, { 'Content-Type': 'image/svg+xml;charset=utf-8' })
+
+        // 生成小盾牌
+        let query_num, query_color
+        if (args['query'].match(/problem/)) { // 通过题目数量
+            query_num = config.problems_num[args['query']]
+            query_color = 'blue'
+
+            // 目标
+            if (args['to'] != null) {
+                if (parseInt(query_num) >= parseInt(args['to']))
+                    query_color = 'green'
+                query_num = query_num + ' / ' + args['to']
+            }
+        } else if (args['query'].match(/rating/i)) { // 咕值
+            query_num = config.user.rating[args['query']]
+            query_color = 'red'
+        }
+
+        require('./make/shields')(querys[args['query']], query_num, query_color).then((_data) => {
+            _response.write(_data)
+        }).then(() => _response.end())
+    } else {
+        _response.writeHead(400)
+        _response.end('400 Bad Request\nType error')
+    }
+}
+
+// 读取用户信息
 function update() {
-    // 读取用户信息
     require('./user')(config.uid, config.client_id).then((_config) => {
         config.user = _config[0]
         config.problems = _config[1]
         config.problems_num = _config[2]
-
-        // 创建服务器
-        http.createServer((_request, _response) => {
-            console.log('[Server] URL: ' + _request.url)
-            let args = querystring.parse(url.parse(_request.url).query) // 获取参数
-
-            if (!_request.url.match(/gen/)) {
-                _response.writeHead(404)
-                _response.end('404 Not Found')
-            } else if (args['query'] == null) {
-                _response.writeHead(400)
-                _response.end('400 Bad Request')
-            } else if (args['query'] in querys) {
-                _response.writeHead(200, { 'Content-Type': 'image/svg+xml;charset=utf-8' })
-
-                // 生成小盾牌
-                let query_num, query_color
-                if (args['query'].match(/problem/)) { // 通过题目数量
-                    query_num = config.problems_num[args['query']]
-                    query_color = 'blue'
-
-                    // 目标
-                    if (args['to'] != null) {
-                        if (parseInt(query_num) >= parseInt(args['to']))
-                            query_color = 'green'
-                        query_num = query_num + ' / ' + args['to']
-                    }
-                } else if (args['query'].match(/rating/i)) { // 咕值
-                    query_num = config.user.rating[args['query']]
-                    query_color = 'red'
-                }
-
-                require('./make/shields')(querys[args['query']], query_num, query_color).then((_data) => {
-                    _response.write(_data)
-                }).then(() => _response.end())
-            } else {
-                _response.writeHead(400)
-                _response.end('400 Bad Request\nType error')
-            }
-        }).listen(port, (_error) => {
-            if (_error) {
-                console.log(chalk.red(_error))
-                throw _error
-            }
-            console.log('[Server] 服务器正在 ' + port + ' 端口上运行...')
-        })
     })
 }
 
+// 创建服务器
+http.createServer(request).listen(port, (_error) => {
+    if (_error) {
+        console.log(chalk.red(_error))
+        throw _error
+    }
+    console.log('[Server] 服务器正在 ' + port + ' 端口上运行...')
+})
