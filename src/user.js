@@ -33,19 +33,40 @@ module.exports = (_uid, _client_id) => {
     
                 if (data['code'] == 200) {
                     try {
-                        resolve(data.currentData.user)
+                        // 通过题目难度统计
+                        let problems_num = {
+                            problem0: 0,
+                            problem1: 0,
+                            problem2: 0,
+                            problem3: 0,
+                            problem4: 0,
+                            problem5: 0,
+                            problem6: 0
+                        }
+
+                        for (let problem of data.currentData['passedProblems']) {
+                            problems_num['problem' + problem['difficulty']]++
+                        }
+
                         console.log('[User] 用户名: ' + data.currentData.user['name'])
+                        resolve([data.currentData['user'], data.currentData['passedProblems'], problems_num])
+                        return
                     } catch (_error) {
-                        console.error(chalk.red('[User] 获取用户估值失败，可能是cookie过期或无效\n' +  _error))
+                        console.error(chalk.red('[User] 获取用户信息失败，可能是cookie过期或无效\n' +  _error))
+                        reject(_error)
+                        return
                     }
                 } else {
                     console.error(chalk.red('[User] 获取用户信息失败，状态码非200'))
+                    reject()
+                    return
                 }
             })
     
         }).on('error', (_error) => {
-            reject(_error.message)
             console.error(chalk.red('[User] 获取用户数据失败\n' + _error))
+            reject(_error.message)
+            return
         })
     
     })
