@@ -83,15 +83,15 @@ http.createServer((_request, _response) => {
             if ('rating' in config.user) // 异常处理
                 query_num = config.user.rating[args['query']]
         } else if (args['query'] == 'visitor') { // 访客统计
+            let data = 0
+
             if (fs.existsSync('visitor.txt')) {
-                let data = fs.readFileSync('visitor.txt', {encoding: 'utf8'})
-                data = parseInt(data) + 1
-                fs.writeFileSync('visitor.txt', data.toString(), {encoding: 'utf8'})
+                data = parseInt(fs.readFileSync('visitor.txt', {encoding: 'utf8'})) + 1
             } else {
                 data = 1
-                fs.writeFileSync('visitor.txt', data.toString(), {flag: 'w+', encoding: 'utf8'})
             }
 
+            fs.writeFileSync('visitor.txt', data.toString(), {flag: 'w+', encoding: 'utf8'})
             query_num = data
         }
 
