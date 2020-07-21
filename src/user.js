@@ -50,17 +50,18 @@ module.exports = (_uid, _client_id) => {
                         }
 
                         console.log('[User] 用户名: ' + data.currentData.user['name'])
-                        resolve([data.currentData['user'], data.currentData['passedProblems'], problems_num])
-                        return
+
+                        if (!'rating' in data.currentData.user)
+                            console.error('[User] Cookie已过期，请及时更换')
+
+                        return resolve([data.currentData['user'], data.currentData['passedProblems'], problems_num])
                     } catch (_error) {
                         console.error(chalk.red('[User] 获取用户信息失败，可能是cookie过期或无效\n' +  _error))
-                        reject(_error)
-                        return
+                        return reject(_error)
                     }
                 } else {
                     console.error(chalk.red('[User] 获取用户信息失败，状态码' + data['code']))
-                    reject()
-                    return
+                    return reject()
                 }
             })
     

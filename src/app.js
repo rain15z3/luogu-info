@@ -44,7 +44,17 @@ config.client_id = process.argv[4]
 update()
 setInterval(update, timeout) // 实时更新数据
 
-function request(_request, _response) {
+// 读取用户信息
+function update() {
+    require('./user')(config.uid, config.client_id).then((_config) => {
+        config.user = _config[0]
+        config.problems = _config[1]
+        config.problems_num = _config[2]
+    })
+}
+
+// 创建服务器
+http.createServer((_request, _response) => {
     console.log('[Server] URL: ' + _request.url)
     let args = querystring.parse(url.parse(_request.url).query) // 获取参数
 
@@ -70,21 +80,19 @@ function request(_request, _response) {
                 query_num = query_num + ' / ' + args['to']
             }
         } else if (args['query'].match(/rating/i)) { // 咕值
-            query_num = config.user.rating[args['query']]
+            if ('rating' in config.user) // 异常处理
+                query_num = config.user.rating[args['query']]
         } else if (args['query'] == 'visitor') { // 访客统计
-            let data = fs.readFileSync('visitor.txt', {encoding: 'utf8'})
-            data = parseInt(data) + 1
-            fs.writeFileSync('visitor.txt', data.toString(), {encoding: 'utf8'})
+            if (fs.existsSync('visitor.txt')) {
+                let data = fs.readFileSync('visitor.txt', {encoding: 'utf8'})
+                data = parseInt(data) + 1
+                fs.writeFileSync('visitor.txt', data.toString(), {encoding: 'utf8'})
+            } else {
+                data = 1
+                fs.writeFileSync('visitor.txt', data.toString(), {flag: 'w+', encoding: 'utf8'})
+            }
+
             query_num = data
-
-
-            /*fs.readFile('visitor.txt', {encoding: 'utf8', flag: 'w+'}, (_error, _data) => {
-                if (_error)
-                    return console.error(chalk.red(_error))
-                _data = parseInt(_data) + 1
-                fs.writeFileSync('visitor.txt', _data.toString(), {encoding: 'utf8', flag: 'w+'})
-                query_num = _data
-            })*/
         }
 
         require('./make/shields')(querys[args['query']], query_num, query_color).then((_data) => {
@@ -94,22 +102,6 @@ function request(_request, _response) {
         _response.writeHead(400)
         _response.end('400 Bad Request\nType error')
     }
-}
-
-// 读取用户信息
-function update() {
-    require('./user')(config.uid, config.client_id).then((_config) => {
-        config.user = _config[0]
-        config.problems = _config[1]
-        config.problems_num = _config[2]
-    })
-}
-
-// 创建服务器
-http.createServer(request).listen(port, (_error) => {
-    if (_error) {
-        console.log(chalk.red(_error))
-        throw _error
-    }
+}).listen(port, () => {
     console.log('[Server] 服务器正在 ' + port + ' 端口上运行...')
 })
