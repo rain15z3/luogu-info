@@ -1,75 +1,78 @@
-const https = require('https')
-const urlencode = require('urlencode')
-const chalk = require('chalk')
-const userAgents = require('./userAgents')
+const https = require('https');
+const urlencode = require('urlencode');
+const print = require('./utils/print');
+const userAgents = require('./utils/userAgents');
 
-module.exports = (_uid, _client_id) => {
-    return new Promise((resolve, reject) => {
-        let options = {
-            hostname: 'www.luogu.com.cn',
-            path: '/user/' + _uid,
-            headers: {
-                'User-Agent': userAgents[parseInt(Math.random() * userAgents.length)],
-                'Cookie': '__client_id=' + _client_id + '; _uid=' + _uid
-            }
-        }
-
-        console.log('[User] 正在获取用户信息...\nUID: ' + _uid)
-    
-        // 获取数据
-        https.get(options, (_response) => {
-            let data = ''
-            let reg = /"%(.*)"/g
-    
-            _response.on('data', (_data) => {
-                data += _data.toString()
-            })
-    
-            _response.on('end', () => {
-                data = data.match(reg)[0]
-                data = data.replace(/"/g, '')
-                data = urlencode.decode(data, 'gbk')
-                data = JSON.parse(data)
-    
-                if (data['code'] == 200) {
-                    try {
-                        // 通过题目难度统计
-                        let problems_num = {
-                            problem0: 0,
-                            problem1: 0,
-                            problem2: 0,
-                            problem3: 0,
-                            problem4: 0,
-                            problem5: 0,
-                            problem6: 0,
-                            problem7: 0,
-                        }
-
-                        for (let problem of data.currentData['passedProblems']) {
-                            problems_num['problem' + problem['difficulty']]++
-                        }
-
-                        console.log('[User] 用户名: ' + data.currentData.user['name'])
-
-                        if (!'rating' in data.currentData.user)
-                            console.error('[User] Cookie已过期，请及时更换')
-
-                        return resolve([data.currentData['user'], data.currentData['passedProblems'], problems_num])
-                    } catch (_error) {
-                        console.error(chalk.red('[User] 获取用户信息失败，可能是cookie过期或无效\n' +  _error))
-                        return reject(_error)
-                    }
-                } else {
-                    console.error(chalk.red('[User] 获取用户信息失败，状态码' + data['code']))
-                    return reject()
+module.exports = {
+    getInfo: async ($uid, $client_id, $response) => {
+        return await new Promise(($resolve, $reject) => {
+            let options = {
+                hostname: 'www.luogu.com.cn',
+                path: '/user/' + $uid,
+                headers: {
+                    'User-Agent': userAgents[parseInt(Math.random() * userAgents.length)],
+                    'Cookie': '__client_id=' + $client_id + '; _uid=' + $uid
                 }
-            })
-    
-        }).on('error', (_error) => {
-            console.error(chalk.red('[User] 获取用户数据失败\n' + _error))
-            reject(_error.message)
-            return
-        })
-    
-    })
+            }
+
+            https.get(options, ($res) => {
+                let data = '';
+                let reg = /"%(.*)"/g;
+
+                $res.on('data', ($chunk) => {
+                    data += $chunk;
+                });
+
+                $res.on('end', () => {
+                    // 处理数据
+                    data = data.match(reg)[0];
+                    data = data.replace(/"/g, '');
+                    data = urlencode.decode(data, 'gbk');
+                    data = JSON.parse(data);
+
+                    if (data.code != 200)
+                        return $reject('获取JSON失败，状态码非200');
+
+                    if (!'rating' in data.currentData.user)
+                        return $reject('Cookie已过期，请及时更换');
+
+                    // 统计题目难度
+                    let difficulty = {
+                        problem0: 0,
+                        problem1: 0,
+                        problem2: 0,
+                        problem3: 0,
+                        problem4: 0,
+                        problem5: 0,
+                        problem6: 0,
+                        problem7: 0,
+                    }
+
+                    for (let problem of data.currentData['passedProblems']) {
+                        difficulty['problem' + problem['difficulty']]++;
+                    }
+                    
+                    // 处理返回数据
+                    let returnObj = {
+                        user: data.currentData.user.rating['user'],
+                        rating: data.currentData.user['rating'],
+                        passedProblems: difficulty,
+                    }
+
+                    returnObj.user['followingCount'] = data.currentData.user['followingCount'];
+                    returnObj.user['followerCount'] = data.currentData.user['followerCount'];
+                    returnObj.user['passedProblemCount'] = data.currentData.user['passedProblemCount'];
+                    returnObj.user['submittedProblemCount'] = data.currentData.user['submittedProblemCount'];
+                    delete returnObj.rating.user;
+
+                    return $resolve(returnObj);
+                });
+            }).on('error', ($err) => {
+                return $reject(`获取JSON失败: ${$err.message}`);
+            });
+        }).catch(($err) => {
+            $response.end($err); // 把错误信息输出到网页
+            return print.error($err);
+        });
+    }
 }
