@@ -61,10 +61,10 @@ module.exports = {
                         cookie: $client_id
                     }
 
-                    returnObj.user['followingCount'] = data.currentData.user['followingCount'];
-                    returnObj.user['followerCount'] = data.currentData.user['followerCount'];
-                    returnObj.user['passedProblemCount'] = data.currentData.user['passedProblemCount'];
-                    returnObj.user['submittedProblemCount'] = data.currentData.user['submittedProblemCount'];
+                    returnObj['followingCount'] = data.currentData.user['followingCount'];
+                    returnObj['followerCount'] = data.currentData.user['followerCount'];
+                    returnObj['passedProblemCount'] = data.currentData.user['passedProblemCount'];
+                    returnObj['submittedProblemCount'] = data.currentData.user['submittedProblemCount'];
                     delete returnObj.rating.user;
 
                     return $resolve(returnObj);

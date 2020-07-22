@@ -22,6 +22,11 @@ module.exports = {
         'problem5': '提高+/省选-',
         'problem6': '省选/NOI-',
         'problem7': 'NOI/NOI+/CTSC',
-        'visitor': '访客总数'
+        'visitor': '访客总数',
+        'ac': 'AC率',
+        'passedProblemCount': '通过数量',
+        'submittedProblemCount': '提交数量',
+        'followerCount': '粉丝',
+        'followingCount': '关注'
     }
 }

@@ -17,6 +17,18 @@ module.exports = async ($data, $args) => {
         }
     } else if ($args['query'].match(/rating/i)) { // 咕值
         query_num = $data.rating[$args['query']];
+    } else if ($args['query'].match(/passedProblemCount/) ||// 通过数量
+        $args['query'].match(/submittedProblemCount/) ||    // 提交数量
+        $args['query'].match(/followerCount/) ||            // 粉丝数量
+        $args['query'].match(/followingCount/)) {           // 关注数量
+        query_num = $data[$args['query']];
+    } else if ($args['query'].match(/ac/)) { // AC率
+        let ac = parseFloat($data['passedProblemCount']) / parseFloat($data['submittedProblemCount']);
+        ac *= 100;
+        ac = ac.toFixed(2);
+        query_num = ac + '%';
+    } else if ($args['query'].match(/passedProblems/)) {
+        query_num = $data.rating[$args['query']];
     } else if ($args['query'] == 'visitor') { // 访客统计
         try {
             let visitor = require('../visitor.json');

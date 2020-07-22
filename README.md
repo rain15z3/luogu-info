@@ -48,29 +48,37 @@ node .
 同理，把下文中的```localhost```换成```luogu.app.luoling8192.top```就可以了
 
 ## 接口
+
+**使用的时候请注意大小写**
+
 ```
-http://localhost:98/gen?uid=xxx&query=rating          # 总咕值
-http://localhost:98/gen?uid=xxx&query=basicRating     # 基础信用
-http://localhost:98/gen?uid=xxx&query=practiceRating  # 练习情况
-http://localhost:98/gen?uid=xxx&query=socialRating    # 社区贡献
-http://localhost:98/gen?uid=xxx&query=contestRating   # 比赛情况
-http://localhost:98/gen?uid=xxx&query=prizeRating     # 获得成就
+http://localhost:98/gen?uid=xxx&query=rating                # 总咕值
+http://localhost:98/gen?uid=xxx&query=basicRating           # 基础信用
+http://localhost:98/gen?uid=xxx&query=practiceRating        # 练习情况
+http://localhost:98/gen?uid=xxx&query=socialRating          # 社区贡献
+http://localhost:98/gen?uid=xxx&query=contestRating         # 比赛情况
+http://localhost:98/gen?uid=xxx&query=prizeRating           # 获得成就
 ```
 
 ```
-http://localhost:98/gen?uid=xxx&query=visitor         # 总访客数
+http://localhost:98/gen?uid=xxx&query=visitor               # 总访客数
+http://localhost:98/gen?uid=xxx&query=ac                    # AC率（百分比）
+http://localhost:98/gen?uid=xxx&query=passedProblemCount    # 通过数量
+http://localhost:98/gen?uid=xxx&query=submittedProblemCount # 提交数量
+http://localhost:98/gen?uid=xxx&query=followerCount         # 粉丝数量
+http://localhost:98/gen?uid=xxx&query=followingCount        # 关注数量
 ```
 
 ```
 # to表示目标数量，达到目标后颜色会变成绿色
-http://localhost:98/gen?uid=xxx&query=problem0       # 未评定
-http://localhost:98/gen?uid=xxx&query=problem1&to=50 # 红题
-http://localhost:98/gen?uid=xxx&query=problem2&to=50 # 橙题
-http://localhost:98/gen?uid=xxx&query=problem3&to=50 # 黄题
-http://localhost:98/gen?uid=xxx&query=problem4&to=20 # 绿题
-http://localhost:98/gen?uid=xxx&query=problem5&to=20 # 蓝题
-http://localhost:98/gen?uid=xxx&query=problem6&to=5  # 紫题
-http://localhost:98/gen?uid=xxx&query=problem7&to=1  # 黑题
+http://localhost:98/gen?uid=xxx&query=problem0              # 未评定
+http://localhost:98/gen?uid=xxx&query=problem1&to=50        # 红题
+http://localhost:98/gen?uid=xxx&query=problem2&to=50        # 橙题
+http://localhost:98/gen?uid=xxx&query=problem3&to=50        # 黄题
+http://localhost:98/gen?uid=xxx&query=problem4&to=20        # 绿题
+http://localhost:98/gen?uid=xxx&query=problem5&to=20        # 蓝题
+http://localhost:98/gen?uid=xxx&query=problem6&to=5         # 紫题
+http://localhost:98/gen?uid=xxx&query=problem7&to=1         # 黑题
 ```
 
 ## Cookie获取方法
