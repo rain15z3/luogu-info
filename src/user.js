@@ -2,9 +2,10 @@ const https = require('https');
 const urlencode = require('urlencode');
 const print = require('./utils/print');
 const userAgents = require('./utils/userAgents');
+const server = require('./server');
 
 module.exports = {
-    getInfo: async ($uid, $client_id, $response) => {
+    getInfo: async ($uid, $client_id) => {
         return await new Promise(($resolve, $reject) => {
             let options = {
                 hostname: 'www.luogu.com.cn',
@@ -57,6 +58,7 @@ module.exports = {
                         user: data.currentData.user.rating['user'],
                         rating: data.currentData.user['rating'],
                         passedProblems: difficulty,
+                        cookie: $client_id
                     }
 
                     returnObj.user['followingCount'] = data.currentData.user['followingCount'];
@@ -71,7 +73,7 @@ module.exports = {
                 return $reject(`获取JSON失败: ${$err.message}`);
             });
         }).catch(($err) => {
-            $response.end($err); // 把错误信息输出到网页
+            server.response($err);
             return print.error($err);
         });
     }
