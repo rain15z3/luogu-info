@@ -11,9 +11,9 @@ module.exports = async ($data, $args) => {
 
         // 目标数量
         if ($args['to'] != null) {
-            if (parseInt(query_num) >= parseInt(args['to']))
+            if (parseInt(query_num) >= parseInt($args['to']))
                 query_color = 'green';
-            query_num = `${query_num} / ${args['to']}`;
+            query_num = `${query_num} / ${$args['to']}`;
         }
     } else if ($args['query'].match(/rating/i)) { // 咕值
         query_num = $data.rating[$args['query']];
