@@ -4,7 +4,7 @@ const print = require('./utils/print');
 const userAgents = require('./utils/userAgents');
 
 module.exports = {
-    getInfo: async ($uid, $client_id, $response) => {
+    getInfo: async ($uid, $client_id) => {
         return await new Promise(($resolve, $reject) => {
             let options = {
                 hostname: 'www.luogu.com.cn',
@@ -30,11 +30,13 @@ module.exports = {
                     data = urlencode.decode(data, 'gbk');
                     data = JSON.parse(data);
 
-                    if (data.code != 200)
+                    if (data.code != 200) {
                         return $reject('获取JSON失败，状态码非200');
+                    }
 
-                    if (!('rating' in data.currentData.user))
+                    if (!('rating' in data.currentData.user)) {
                         return $reject('Cookie已过期，请及时更换');
+                    }
 
                     // 统计题目难度
                     let difficulty = {

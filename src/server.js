@@ -53,6 +53,15 @@ module.exports = server = {
                         } catch ($err) {
                             print.error($err);
                         }
+
+                        // 文件存储
+                        try {
+                            fs.writeFile('./users.json', JSON.stringify(conf.users), { flag: 'w+' }, () => {
+                                print.success('写入文件成功');
+                            }); // TODO: 优化性能
+                        } catch ($err) {
+                            print.error($err);
+                        }
                     }
                 } else if ($req.url.match(/gen/) && 'query' in args) { // 生成徽章
                     if (conf.users[args['uid']] != null && args['query'] in conf.querys) {
