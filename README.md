@@ -11,11 +11,14 @@
 TODO
 
 - 支持洛谷登录
-- 添加新功能，如：提交/通过数量，AC率...
+- 更快的加载速度
 
 **目前仅支持使用Cookie的方式来获取个人数据**
 
 ## 效果图
+
+![](http://luogu.app.luoling8192.top:98/gen?uid=312639&query=rating)
+![](http://luogu.app.luoling8192.top:98/gen?uid=312639&query=ac)
 
 ![洛谷咕值](https://i.loli.net/2020/07/22/PcJo3vLdxaYRTjt.png)
 
@@ -28,6 +31,7 @@ TODO
 ```bash
 git clone https://github.com/rain15z3/luogu-info.git
 cd luogu-info/
+npm install
 node .
 ```
 
@@ -46,6 +50,8 @@ node .
 访问```http://luogu.app.luoling8192.top:98/register?uid=xxx&cookie=xxx```以注册账户
 
 同理，把下文中的```localhost```换成```luogu.app.luoling8192.top```就可以了
+
+如果遇到cookie已过期的提示请多试几次QAQ
 
 ## 接口
 
