@@ -6,36 +6,37 @@ const print = require('./utils/print');
 const user = require('./user');
 let conf = require('./conf');
 
+let res = null;
+
 module.exports = server = {
-    res: null, // 响应数据
     response: (code, message) => {
         message = message || '';
-        this.res.writeHead(code, { 'Content-Type': 'text/plain; charset=utf-8' });
+        res.writeHead(code, { 'Content-Type': 'text/plain; charset=utf-8' });
         switch (code) {
             case 400:
-                this.res.end(`400 Bad Request\n${message}`);
+                res.end(`400 Bad Request\n${message}`);
                 break;
             case 401:
-                this.res.end(`401 Unauthorized\n${message}`);
+                res.end(`401 Unauthorized\n${message}`);
                 break;
             case 403:
-                this.res.end(`403 Forbidden\n${message}`);
+                res.end(`403 Forbidden\n${message}`);
                 break;
             case 404:
-                this.res.end(`404 Not Found\n${message}`);
+                res.end(`404 Not Found\n${message}`);
                 break;
             case 500:
-                this.res.end(`500 Internal Server Error\n${message}`);
+                res.end(`500 Internal Server Error\n${message}`);
                 break;
             case 504:
-                this.res.end(`504 Gateway Timeout\n${message}`);
+                res.end(`504 Gateway Timeout\n${message}`);
                 break;
         }
     },
     run: () => {
         // 创建服务器
         http.createServer(async ($req, $res) => {
-            this.res = $res;
+            res = $res;
             print.info(`接受请求: ${$req.url}`);
             let args = querystring.parse(url.parse($req.url).query); // 获取参数
 
@@ -47,12 +48,11 @@ module.exports = server = {
                             let data = await user.getInfo(args['uid'], args['cookie']);
                             conf.users[args['uid']] = data;
                             print.success(`注册用户: ${data.user['name']}(${data.user['uid']})`);
+                            $res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
+                            $res.end(`注册用户成功，请通过/gen?uid=xxx&query=xxx的方式进行图片生成`);
                         } catch ($err) {
                             print.error($err);
                         }
-
-                        $res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
-                        $res.end(`注册用户成功，请通过/gen?uid=xxx&query=xxx的方式进行图片生成`);
                     }
                 } else if ($req.url.match(/gen/) && 'query' in args) { // 生成徽章
                     if (conf.users[args['uid']] != null && args['query'] in conf.querys) {

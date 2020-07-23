@@ -2,10 +2,9 @@ const https = require('https');
 const urlencode = require('urlencode');
 const print = require('./utils/print');
 const userAgents = require('./utils/userAgents');
-const server = require('./server');
 
 module.exports = {
-    getInfo: async ($uid, $client_id) => {
+    getInfo: async ($uid, $client_id, $response) => {
         return await new Promise(($resolve, $reject) => {
             let options = {
                 hostname: 'www.luogu.com.cn',
@@ -34,7 +33,7 @@ module.exports = {
                     if (data.code != 200)
                         return $reject('获取JSON失败，状态码非200');
 
-                    if (!'rating' in data.currentData.user)
+                    if (!('rating' in data.currentData.user))
                         return $reject('Cookie已过期，请及时更换');
 
                     // 统计题目难度
@@ -73,7 +72,7 @@ module.exports = {
                 return $reject(`获取JSON失败: ${$err.message}`);
             });
         }).catch(($err) => {
-            server.response($err);
+            require('./server').response(403, $err);
             return print.error($err);
         });
     }
