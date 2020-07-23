@@ -41,7 +41,7 @@ module.exports = server = {
 
             if ('uid' in args) {
                 if ($req.url.match(/register/)) { // 注册用户
-                    if ('cookie' in args) { // TODO: 动态获取
+                    if ('cookie' in args) {
                         // 获取用户数据
                         try {
                             let data = await user.getInfo(args['uid'], args['cookie']);
@@ -51,30 +51,30 @@ module.exports = server = {
                             print.error($err);
                         }
 
-                        // 文件存储
-                        try {
-                            if ('save' in args && args['save'] == 'true') {
-                                fs.writeFile('./users.json', JSON.stringify(conf.users), { flag: 'w+' }, () => {
-                                    print.success('写入文件成功');
-                                }); // TODO: 优化性能
-                            }
-                        } catch ($err) {
-                            print.error($err);
-                        }
-
                         $res.writeHead(200, { 'Content-Type': 'text/plain; charset=utf-8' });
                         $res.end(`注册用户成功，请通过/gen?uid=xxx&query=xxx的方式进行图片生成`);
                     }
                 } else if ($req.url.match(/gen/) && 'query' in args) { // 生成徽章
                     if (conf.users[args['uid']] != null && args['query'] in conf.querys) {
+                        // 设置缓存
+                        if (args['query'] != 'visitor') {
+                            $res.setHeader('Expires', new Date(Date.now() + 60 * 60 * 1000).toGMTString());
+                            $res.setHeader('Cache-Control', 'max-age=3600');
+                        }
+
                         $res.writeHead(200, { 'Content-Type': 'image/svg+xml; charset=utf-8' });
 
                         // 生成小徽章
                         let user_data = conf.users[args['uid']];
                         print.info(`用户: ${user_data.user['name']}(${user_data.user['uid']})`);
-                        let svg = await require('./gen')(user_data, args);
 
-                        $res.write(svg);
+                        try {
+                            let svg = await require('./gen')(user_data, args);
+                            $res.write(svg);
+                        } catch ($err) {
+                            print.error($err);
+                        }
+
                         $res.end();
                     } else {
                         print.error('用户未注册');

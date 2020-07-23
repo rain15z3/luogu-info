@@ -31,7 +31,7 @@ cd luogu-info/
 node .
 ```
 
-访问```http://localhost:98/register?uid=xxx&cookie=xxx&save=true```以注册账户
+访问```http://localhost:98/register?uid=xxx&cookie=xxx```以注册账户
 
 **注意：cookie指的是client_id**
 
@@ -43,7 +43,7 @@ node .
 
 服务器地址:```http://luogu.app.luoling8192.top:98/```
 
-访问```http://luogu.app.luoling8192.top:98/register?uid=xxx&cookie=xxx&save=true```以注册账户
+访问```http://luogu.app.luoling8192.top:98/register?uid=xxx&cookie=xxx```以注册账户
 
 同理，把下文中的```localhost```换成```luogu.app.luoling8192.top```就可以了
 

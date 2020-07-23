@@ -19,8 +19,8 @@ module.exports = async ($label, $message, $color) => {
                     print.success(`生成成功`);
                     return $resolve(data);
                 });
-            }).on('error', (_error) => {
-                $reject(_error.message);
+            }).on('error', ($error) => {
+                $reject($error.message);
             });
         } catch ($err) {
             return print.error($err);

@@ -42,17 +42,18 @@ module.exports = async ($data, $args) => {
             query_num = visitor[$data.user['uid']];
             fs.writeFile('./visitor.json', JSON.stringify(visitor), { flag: 'w+' }, () => {
                 print.success('写入文件成功');
-            }); // TODO: 优化性能
+            });
         } catch ($err) {
             print.error($err);
         }
     }
 
     // 生成图片
-    // TODO: 自己实现
-    try {
-        return await require('./make/shields')(conf.querys[$args['query']], query_num, query_color);
-    } catch ($err) {
-        print.error($err);
-    }
+    /*return require('shields-less').svg({
+        leftText: conf.querys[$args['query']].toString(),
+        rightText: query_num.toString(),
+        style: 'squre'
+    });*/
+        
+    return await require('./make/shields')(conf.querys[$args['query']], query_num, query_color);
 }
