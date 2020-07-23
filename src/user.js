@@ -4,7 +4,7 @@ const print = require('./utils/print');
 const userAgents = require('./utils/userAgents');
 
 module.exports = {
-    getInfo: async ($uid, $client_id) => {
+    getInfo: async ($uid, $client_id, $guest, $response) => {
         return await new Promise(($resolve, $reject) => {
             let options = {
                 hostname: 'www.luogu.com.cn',
@@ -34,7 +34,7 @@ module.exports = {
                         return $reject('获取JSON失败，状态码非200');
                     }
 
-                    if (!('rating' in data.currentData.user)) {
+                    if (!('rating' in data.currentData.user) && !$guest) {
                         return $reject('Cookie已过期，请及时更换');
                     }
 
@@ -53,20 +53,30 @@ module.exports = {
                     for (let problem of data.currentData['passedProblems']) {
                         difficulty['problem' + problem['difficulty']]++;
                     }
-                    
-                    // 处理返回数据
-                    let returnObj = {
-                        user: data.currentData.user.rating['user'],
-                        rating: data.currentData.user['rating'],
-                        passedProblems: difficulty,
-                        cookie: $client_id
-                    }
 
-                    returnObj['followingCount'] = data.currentData.user['followingCount'];
-                    returnObj['followerCount'] = data.currentData.user['followerCount'];
-                    returnObj['passedProblemCount'] = data.currentData.user['passedProblemCount'];
-                    returnObj['submittedProblemCount'] = data.currentData.user['submittedProblemCount'];
-                    delete returnObj.rating.user;
+                    let returnObj = {};
+                    if (!$guest) {
+                        // 处理返回数据
+                        returnObj = {
+                            user: data.currentData.user.rating['user'],
+                            rating: data.currentData.user['rating'],
+                            passedProblems: difficulty,
+                            cookie: $client_id
+                        }
+
+                        returnObj['followingCount'] = data.currentData.user['followingCount'];
+                        returnObj['followerCount'] = data.currentData.user['followerCount'];
+                        returnObj['passedProblemCount'] = data.currentData.user['passedProblemCount'];
+                        returnObj['submittedProblemCount'] = data.currentData.user['submittedProblemCount'];
+                        delete returnObj.rating.user;
+                    } else {
+                        returnObj = {
+                            user: data.currentData.user,
+                            passedProblems: difficulty
+                        }
+
+                        delete returnObj.user.introduction;
+                    }
 
                     return $resolve(returnObj);
                 });
@@ -74,7 +84,8 @@ module.exports = {
                 return $reject(`获取JSON失败: ${$err.message}`);
             });
         }).catch(($err) => {
-            require('./server').response(403, $err);
+            if ($response)
+                require('./server').response($response, 403, $err);
             return print.error($err);
         });
     }

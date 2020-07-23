@@ -11,7 +11,7 @@ module.exports = async () => {
 
         // 获取用户数据
         try {
-            let data = await user.getInfo(uid, cookie);
+            let data = await user.getInfo(uid, cookie, false);
             conf.users[uid] = data;
             print.success(`用户: ${data.user['name']}(${data.user['uid']})`);
         } catch ($err) {
@@ -21,8 +21,12 @@ module.exports = async () => {
 
     // 文件存储
     try {
-        fs.writeFile('./users.json', JSON.stringify(conf.users), { flag: 'w+' }, () => {
-            print.success('写入文件成功');
+        if (conf.users == null)
+            throw '文件写入失败';
+
+        fs.writeFile('./users.json', JSON.stringify(conf.users), { flag: 'w+' }, ($err) => {
+            if ($err) print.error($err);
+            print.success('文件写入成功');
         }); // TODO: 优化性能
     } catch ($err) {
         print.error($err);
