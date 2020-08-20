@@ -1,0 +1,34 @@
+{
+  "name": "luogu-info",
+  "version": "1.0.0",
+  "description": "用于获取洛谷用户信息并生成小盾牌",
+  "main": "src/app.js",
+  "license": "MIT",
+  "private": "true",
+  "keywords": [
+    "luogu",
+    "shields"
+  ],
+  "author": {
+    "name": "RainbowBird",
+    "email": "rbxin2003@outlook.com",
+    "url": "https://www.cnblogs.com/luoling8192"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rain15z3/luogu-info.git"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "express": "^4.17.1",
+    "shields-less": "^0.2.2",
+    "urlencode": "^1.1.0"
+  },
+  "engines": {
+    "node": ">= 10.0.0"
+  },
+  "scripts": {
+    "clean": "rm -rf logs/",
+    "pm2": "pm2 start pm2.json"
+  }
+}

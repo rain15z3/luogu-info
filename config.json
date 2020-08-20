@@ -1,0 +1,5 @@
+{
+    "port": 98,
+    "timeout": 7200000,
+    "shields": "http://localhost:3000"
+}

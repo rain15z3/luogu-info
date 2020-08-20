@@ -1,0 +1,25 @@
+{
+    "apps": {
+        "name": "luogu-info",
+        "script": "./src/app.js",
+        "cwd": "./",
+        "args": "",
+        "interpreter": "",
+        "interpreter_args": "",
+        "watch": [
+            "src"
+        ],
+        "ignore_watch": [
+            "node_modules",
+            "logs",
+            "*.json"
+        ],
+        "exec_mode": "fork_mode",
+        "max_memory_restart": 8,
+        "error_file": "./logs/app-err.log",
+        "out_file": "./logs/app-out.log",
+        "merge_logs": true,
+        "min_uptime": "60s",
+        "autorestart": true
+    }
+}
